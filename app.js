@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
 
@@ -9,10 +10,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 mongoose.connect("mongodb://127.0.0.1:27017/secrets");
-const Schema = {
+const Schema = mongoose.Schema({
   email: String,
   password: String,
-};
+});
+const secret = "you-are-my-angle-baby"; //random long string
+Schema.plugin(encrypt, { secret: secret, encryptedFields: ["passwords"] });
 const User = mongoose.model("users", Schema);
 
 app.get("/", (req, res) => {

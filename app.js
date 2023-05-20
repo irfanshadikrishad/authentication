@@ -1,9 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const md5 = require("md5");
+const bcrypt = require("bcrypt");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
+const saltRounds = 10;
 
 const app = express();
 app.use(express.static("public"));
@@ -30,10 +31,14 @@ app
     const password = req.body.password;
     User.findOne({ email: username })
       .then((data) => {
-        if (data.password == md5(password)) {
-          console.log(`logged in as —${username}`);
-          res.render("secrets");
-        }
+        bcrypt.compare(password, data.password, (err, result) => {
+          if (result == true) {
+            console.log(`logged in as —${username}`);
+            res.render("secrets");
+          } else {
+            res.send("—wrong username or password");
+          }
+        });
       })
       .catch((err) => {
         if (err) {
@@ -48,22 +53,24 @@ app
   })
   .post((req, res) => {
     const username = req.body.username;
-    const password = md5(req.body.password);
-    const newUser = new User({
-      email: username,
-      password: password,
-    });
-    newUser
-      .save()
-      .then(() => {
-        console.log(`${username} —registered`);
-        res.render("secrets");
-      })
-      .catch((err) => {
-        if (err) {
-          console.log(err);
-        }
+    const password = req.body.password;
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      const newUser = new User({
+        email: username,
+        password: hash,
       });
+      newUser
+        .save()
+        .then(() => {
+          console.log(`${username} —registered`);
+          res.render("secrets");
+        })
+        .catch((err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+    });
   });
 
 app.listen(5000, () => {

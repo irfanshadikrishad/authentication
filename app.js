@@ -1,6 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const encrypt = require("mongoose-encryption");
+const md5 = require("md5");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
 
@@ -14,8 +15,6 @@ const Schema = mongoose.Schema({
   email: String,
   password: String,
 });
-const secret = "you-are-my-angle-baby"; //random long string
-Schema.plugin(encrypt, { secret: secret, encryptedFields: ["passwords"] });
 const User = mongoose.model("users", Schema);
 
 app.get("/", (req, res) => {
@@ -31,7 +30,7 @@ app
     const password = req.body.password;
     User.findOne({ email: username })
       .then((data) => {
-        if (data.password == password) {
+        if (data.password == md5(password)) {
           console.log(`logged in as —${username}`);
           res.render("secrets");
         }
@@ -49,7 +48,7 @@ app
   })
   .post((req, res) => {
     const username = req.body.username;
-    const password = req.body.password;
+    const password = md5(req.body.password);
     const newUser = new User({
       email: username,
       password: password,

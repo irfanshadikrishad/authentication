@@ -51,12 +51,8 @@ form.login {
   gap: 5px;
 }
 form > input {
-  width: 50%;
-  height: 35px;
-  padding-left: 15px;
   font-size: 1rem;
   border: none;
-  border-radius: 5px;
   outline: none;
 }
 button.loginsubmit {
@@ -80,7 +76,6 @@ button.loginsubmit {
   text-decoration: none;
   font-size: 1rem;
   padding: 8px 25px;
-  border-radius: 5px;
 }
 .btns > a:first-child {
   background-color: #05d481;
@@ -110,4 +105,43 @@ button.loginsubmit {
 }
 .secrets {
   color: #05d481;
+}
+form.write {
+  margin-top: 10px;
+}
+.write > textarea {
+  width: 400px;
+  height: 100px;
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 1rem;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+}
+.submit__home {
+  font-size: 1rem;
+  text-decoration: none;
+  color: whitesmoke;
+  padding: 5px 20px;
+  background-color: #05d481;
+}
+form.write > input[type="submit"] {
+  background-color: #012d4e;
+  color: whitesmoke;
+  padding: 5px 50px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+form.login > input {
+  width: 300px;
+  height: 40px;
+  padding: 0 10px;
+}
+.user__secret {
+  text-align: center;
+  font-style: italic;
+  color: #012d4e;
+  font-weight: bold;
 }

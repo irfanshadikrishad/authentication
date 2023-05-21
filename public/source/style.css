@@ -68,3 +68,30 @@ button.loginsubmit {
   margin-top: 10px;
   cursor: pointer;
 }
+.btns {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btns > a {
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 8px 25px;
+  border-radius: 5px;
+}
+.btns > a:first-child {
+  background-color: white;
+  color: #252525;
+}
+.btns > a:last-child {
+  color: whitesmoke;
+  background-color: #252525;
+}
+.secrets_post {
+  text-align: center;
+  font-size: 1rem;
+  font-style: italic;
+}

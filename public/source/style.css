@@ -38,12 +38,11 @@ body {
 }
 .credentials > a:first-child {
   color: whitesmoke;
-  background-color: #252525;
-  border-radius: 5px;
+  background-color: #012d4e;
 }
 .credentials > a:last-child {
-  background-color: white;
-  color: #252525;
+  background-color: #05d481;
+  color: whitesmoke;
 }
 form.login {
   display: flex;
@@ -58,6 +57,7 @@ form > input {
   font-size: 1rem;
   border: none;
   border-radius: 5px;
+  outline: none;
 }
 button.loginsubmit {
   padding: 5px 60px;
@@ -83,15 +83,31 @@ button.loginsubmit {
   border-radius: 5px;
 }
 .btns > a:first-child {
-  background-color: white;
-  color: #252525;
+  background-color: #05d481;
+  color: whitesmoke;
 }
 .btns > a:last-child {
   color: whitesmoke;
-  background-color: #252525;
+  background-color: #012d4e;
 }
 .secrets_post {
   text-align: center;
   font-size: 1rem;
   font-style: italic;
+}
+.google {
+  padding-top: 20px;
+}
+.google > a {
+  text-decoration: none;
+  color: whitesmoke;
+  background-color: #d0463b;
+  padding: 8px 50px;
+  font-style: italic;
+}
+.home__logo {
+  width: 200px;
+}
+.secrets {
+  color: #05d481;
 }

@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const findOrCreate = require("mongoose-findorcreate");
 
 const app = express();
 app.use(express.static("public"));
@@ -25,17 +27,61 @@ mongoose.connect("mongodb://127.0.0.1:27017/secrets");
 const Schema = new mongoose.Schema({
   email: String,
   password: String,
+  googleId: String,
+  username: String,
 });
 Schema.plugin(passportLocalMongoose); //plugin added to schema
+Schema.plugin(findOrCreate);
 const User = new mongoose.model("users", Schema);
 
-passport.use(User.createStrategy()); // local login staratigies
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(function (user, cb) {
+  process.nextTick(function () {
+    return cb(null, {
+      id: user.id,
+      username: user.username,
+      picture: user.picture,
+    });
+  });
+});
+passport.deserializeUser(function (user, cb) {
+  process.nextTick(function () {
+    return cb(null, user);
+  });
+});
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: "http://localhost:3000/auth/google/secrets",
+      passReqToCallback: true,
+    },
+    function (request, accessToken, refreshToken, profile, done) {
+      User.findOrCreate(
+        { googleId: profile.id, username: profile.displayName },
+        function (err, user) {
+          done(err, user);
+        }
+      );
+    }
+  )
+);
 
 app.get("/", (req, res) => {
   res.render("home");
 });
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+app.get(
+  "/auth/google/secrets",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/secrets");
+  }
+);
 app
   .route("/login")
   .get((req, res) => {
@@ -57,13 +103,6 @@ app
       }
     });
   });
-app.route("/secrets").get((req, res) => {
-  if (req.isAuthenticated()) {
-    res.render("secrets");
-  } else {
-    res.redirect("/login");
-  }
-});
 app
   .route("/register")
   .get((req, res) => {
@@ -86,7 +125,13 @@ app
       }
     );
   });
-
+app.get("/secrets", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("secrets");
+  } else {
+    res.redirect("/login");
+  }
+});
 app.route("/logout").get((req, res) => {
   req.logOut((err) => {
     if (err) {
@@ -97,6 +142,6 @@ app.route("/logout").get((req, res) => {
   });
 });
 
-app.listen(5000, () => {
-  console.log("listening to —5000");
+app.listen(3000, () => {
+  console.log("listening to —3000");
 });
